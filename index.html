@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Stopwatch</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  html, body {
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  #display { font-variant-numeric: tabular-nums; }
+  button:active { opacity: 0.7; }
+</style>
+</head>
+<body class="h-full min-h-screen m-0 flex items-center justify-center bg-gray-100 dark:bg-neutral-900 text-gray-900 dark:text-gray-100 font-sans">
+  <div class="bg-white dark:bg-neutral-800 rounded-2xl px-12 py-10 text-center shadow-xl w-[90vw] max-w-[360px]">
+    <h1 id="display" class="text-5xl sm:text-6xl mb-6 tracking-wide">00:00.0</h1>
+    <div class="flex gap-3 justify-center flex-wrap">
+      <button id="startBtn" onclick="start()" class="border-0 rounded-xl px-5 py-3 font-semibold text-white bg-indigo-600 transition-opacity">Start</button>
+      <button id="stopBtn" onclick="stop()" class="border-0 rounded-xl px-5 py-3 font-semibold text-white bg-red-500 transition-opacity">Stop</button>
+      <button id="resetBtn" onclick="reset()" class="border-0 rounded-xl px-5 py-3 font-semibold text-white bg-gray-500 transition-opacity">Reset</button>
+    </div>
+  </div>
+
+<script>
+  let startTime = 0;
+  let elapsed = 0;
+  let timer = null;
+  const dis = document.getElementById("display");
+
+  function format(ms) {
+    const totalSec = ms / 1000;
+    const min = Math.floor(totalSec / 60);
+    const sec = Math.floor(totalSec % 60);
+    const tenth = Math.floor((ms % 1000) / 100);
+    return String(min).padStart(2, "0") + ":" + String(sec).padStart(2, "0") + "." + tenth;
+  }
+
+  function render() {
+    dis.textContent = format(elapsed);
+  }
+
+  function start() {
+    if (timer) return;
+    startTime = Date.now() - elapsed;
+    timer = setInterval(function () {
+      elapsed = Date.now() - startTime;
+      render();
+    }, 100);
+  }
+
+  function stop() {
+    clearInterval(timer);
+    timer = null;
+  }
+
+  function reset() {
+    stop();
+    elapsed = 0;
+    render();
+  }
+
+  render();
+</script>
+</body>
+</html>
